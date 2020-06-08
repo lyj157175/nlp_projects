@@ -1,5 +1,5 @@
 # NLP_projects
-NLP_projects：
+My_NLP_projects：动手NLP项目汇总
 
 
 # 1. 《Bert模型实现文本分类》项目： 
@@ -18,7 +18,7 @@ NLP_projects：
     -skip-gram预测周围词并不是目的，目的是训练词向量参数，找到两个矩阵
     input embedding: 30000*100
     output embedding: 30000*100
-
+    
     学习词向量的概念
     用Skip-thought模型训练词向量
     学习使用PyTorch dataset和dataloader
