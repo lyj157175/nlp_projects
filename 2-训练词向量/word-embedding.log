@@ -5024,3 +5024,6 @@ epoch: 0, iter: 478200, loss: 30.33586311340332
 epoch: 0, iter: 478300, loss: 29.787559509277344
 epoch: 0, iter: 478400, loss: 29.153276443481445
 epoch: 0, iter: 478500, loss: 30.832725524902344
+epoch: 0, iter: 0, loss: 45.747711181640625
+epoch: 0, iter: 0, loss: 45.747718811035156
+epoch: 0, iteration: 0, simlex-999: SpearmanrResult(correlation=-0.00024318666759998462, pvalue=0.9940147791142859), men: SpearmanrResult(correlation=0.0064605026706591635, pvalue=0.7428175568506101), sim353: SpearmanrResult(correlation=-0.03640702293314807, pvalue=0.5170415788226761), nearest to monster: ['monster', 'rosicrucian', 'moving', 'fascism', 'preparation', 'municipalities', 'fieldwork', 'wasted', 'deterrent', 'forum']
