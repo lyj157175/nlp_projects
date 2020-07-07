@@ -22,3 +22,7 @@
     -主要技术：Pytorch / Torchtext / Spacy / RNN / LSTM
     -项目介绍：使用IMDb电影评论数据集并用torchtext做数据预处理，分别用Word Averaging/RNN/CNN三种模型来做情感分析，检测一段文本的情感是正面还是负面的，保存三种最好的训练模型结果并对其进行评估。
 
+5.《机器翻译》项目：
+
+
+
