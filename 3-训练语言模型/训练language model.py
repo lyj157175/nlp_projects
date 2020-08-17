@@ -4,11 +4,10 @@
 # # 训练语言模型
 # 
 # 用RNN,LSTM,GRU来训练一个语言模型，用于预测单词的下一个词
-# - 学习语言模型，以及如何训练一个语言模型
-# - 学习torchtext的基本使用方法
+# - torchtext基本用法
 #     - 构建 vocabulary
 #     - word to inde 和 index to word
-# - 学习torch.nn的一些基本模型
+# - torch.nn的一些基本模型
 #     - Linear
 #     - RNN
 #     - LSTM
@@ -17,12 +16,10 @@
 #     - Gradient Clipping
 # - 如何保存和读取模型
 
-# 我们会使用 [torchtext](https://github.com/pytorch/text) 来创建vocabulary, 然后把数据读成batch的格式。请大家自行阅读README来学习torchtext。
-
 # 
-# <font color=red><b>先了解下torchtext库：[torchtext介绍和使用教程](https://blog.csdn.net/u012436149/article/details/79310176)：这个新手必看，不看下面代码听不懂</b></font> 
+# <font color=red><b>先了解下torchtext库：[torchtext介绍和使用教程](https://blog.csdn.net/u012436149/article/details/79310176)</b></font> 
 
-# In[1]:
+# In[2]:
 
 
 import torch
@@ -41,15 +38,15 @@ if USE_CUDA:
     torch.cuda.manual_seed(53113)
 
 BATCH_SIZE = 32 
-EMBEDDING_SIZE = 650  
+EMBEDDING_SIZE = 500  
 MAX_VOCAB_SIZE = 50000  
 
 
-# - 我们会继续使用上次的text8作为我们的训练，验证和测试数据
+# - 使用text8作为我们的训练，验证和测试数据
 # - torchtext提供了LanguageModelingDataset这个class来帮助我们处理语言模型数据集
 # - BPTTIterator可以连续地得到连贯的句子
 
-# In[2]:
+# In[3]:
 
 
 TEXT = torchtext.data.Field(lower=True)   #Field对象：如何预处理文本数据的信息，这里定义单词全部小写
@@ -62,7 +59,7 @@ train, val, test = torchtext.datasets.LanguageModelingDataset.splits(
                     text_field=TEXT)
 
 TEXT.build_vocab(train, max_size=MAX_VOCAB_SIZE)
-#build_vocab可以根据我们提供的训练数据集来创建最高频单词的单词表，max_size帮助我们限定单词总量。
+# build_vocab可以根据我们提供的训练数据集来创建最高频单词的单词表，max_size帮助我们限定单词总量。
 print("vocabulary size: {}".format(len(TEXT.vocab)))
 
 
@@ -75,7 +72,7 @@ print("------"*10)
 print(list(TEXT.vocab.stoi.items())[0:50])
 
 
-# In[10]:
+# In[5]:
 
 
 VOCAB_SIZE = len(TEXT.vocab) # 50002
@@ -83,10 +80,10 @@ train_iter, val_iter, test_iter = torchtext.data.BPTTIterator.splits(
                             (train, val, test), 
                             batch_size=BATCH_SIZE, 
                             device=-1, 
-                            bptt_len=50, # 反向传播往回传的长度，这里我暂时理解为一个样本有多少个单词传入模型
+                            bptt_len=50, # 反理解为一个样本有多少个单词传入模型
                             repeat=False, 
                             shuffle=True)
-# BPTTIterator可以连续地得到连贯的句子，BPTT的全称是back propagation through time。
+# BPTTIterator可以连续地得到连贯的句子，BPTT的全称是back propagation through time
 '''
 Iterator：标准迭代器
 BucketIerator：相比于标准迭代器，会将类似长度的样本当做一批来处理，
@@ -97,7 +94,7 @@ BPTTIterator: 基于BPTT(基于时间的反向传播算法)的迭代器，一般
 '''
 
 
-# In[11]:
+# In[6]:
 
 
 print(next(iter(train_iter))) # 一个batch训练集维度
@@ -107,7 +104,7 @@ print(next(iter(test_iter))) # 一个batch测试集维度
 
 # 模型的输入是一串文字，模型的输出也是一串文字，他们之间相差一个位置，因为语言模型的目标是根据之前的单词预测下一个单词。
 
-# In[21]:
+# In[7]:
 
 
 it = iter(train_iter)
@@ -116,7 +113,7 @@ print(" ".join([TEXT.vocab.itos[i] for i in batch.text[:,1]]))   # 打印一个�
 print(" ".join([TEXT.vocab.itos[i] for i in batch.target[:,1]])) # 打印一个输出的句子
 
 
-# In[13]:
+# In[8]:
 
 
 for j in range(5): # 这种取法是在一个固定的batch里取数据，发现一个batch里的数据是连不起来的。
@@ -126,7 +123,7 @@ for j in range(5): # 这种取法是在一个固定的batch里取数据，发现
     print(" ".join([TEXT.vocab.itos[i] for i in batch.target[:,j].data]))
 
 
-# In[18]:
+# In[9]:
 
 
 for i in range(5): # 这种取法是在每个batch里取某一个相同位置数据，发现不同batch间相同位置的数据是可以连起来的。这里有点小疑问。
@@ -139,7 +136,7 @@ for i in range(5): # 这种取法是在每个batch里取某一个相同位置数
 
 # ### 定义模型
 
-# In[23]:
+# In[33]:
 
 
 class RNNModel(nn.Module):
@@ -165,9 +162,9 @@ class RNNModel(nn.Module):
             except KeyError:
                 raise ValueError( """An invalid option for `--model` was supplied,
                                  options are ['LSTM', 'GRU', 'RNN_TANH' or 'RNN_RELU']""")
-            self.rnn = nn.RNN(embedding_size, hidden_size, nlayers, nonlinearity=nonlinearity, dropout=dropout)
-        self.linear = nn.Linear(hidden_size, vocab_size)
-        # 最后线性全连接隐藏层的维度(1000,50002)
+            self.rnn = nn.RNN(embedding_size, hidden_size, nlayers, 
+                              nonlinearity=nonlinearity, dropout=dropout)
+        self.linear = nn.Linear(hidden_size, vocab_size)  # (1000, 50002)
       
         self.init_weights()
 
@@ -187,54 +184,44 @@ class RNNModel(nn.Module):
             - 输入循环神经网络
             - 一个线性层从hidden state转化为输出单词表
         '''       
-        # input.shape = seq_len * batch = [50, 32]，可以在LSTM里定义batch_first = True
+        # input: seq_len * batch = [50, 32]，可以在LSTM定义batch_first = True
         # hidden = (nlayers * b * hidden_size)
         # hidden是个元组，输入有两个参数，一个是刚开始的隐藏层h的维度，一个是刚开始的用于记忆的c的维度，
        
         embed = self.drop(self.embedding(input))  #seq_len * b * embedding_size
         output, hidden = self.rnn(embed, hidden) 
         # output.shape = seq_len * b * hidden_size 
-        # hidden元组 = (h层维度：nlayers * 32 * hidden_size, c层维度：nlayers * 32 * hidden_size)
+        # hidden元组 = (h层：nlayers * 32 * hidden_size, c层：nlayers * 32 * hidden_size)
         output = self.drop(output)
-        linear = self.linear(output.view(output.size(0)*output.size(1), output.size(2)))
-        # output最后的输出层一定要是二维的，只是为了能进行全连接层的运算，所以把前两个维度拼到一起，（50*32,hidden_size)
-        # linear.shape=（seq_len*b,hidden_size)*(hidden_size, vocab_size)= [seq_len*b, vocab_size]
+        linear = self.linear(output.view(-1, output.size(2)))  
+        # [seq_len*batch, hidden_size] -> [seq_len*batch, vocab_size]
         
         return linear.view(output.size(0), output.size(1), linear.size(1)), hidden
-               # 我们要知道每一个位置预测的是哪个单词，所以最终输出要恢复维度 = [seq_len, b, vocab_size]
+               # 输出恢复维度 :[seq_len, b, vocab_size]
                # hidden = (h层维度：nlayers * b * hidden_size, c层维度：nlayers * b * hidden_size)
 
+            
     def init_hidden(self, batch_size, requires_grad=True):
         # 最初隐藏层参数的初始化
         weight = next(self.parameters())
-        # weight = torch.Size([50002, 650])是所有参数的第一个参数
-        # 所有参数self.parameters()，是个生成器，LSTM所有参数维度种类如下：
-        # print(list(iter(self.parameters())))
-        # torch.Size([50002, 650])
-        # torch.Size([4000, 650])
-        # torch.Size([4000, 1000])
-        # torch.Size([4000]) # 偏置项
-        # torch.Size([4000])
-        # torch.Size([4000, 1000])
-        # torch.Size([4000, 1000])
-        # torch.Size([4000])
-        # torch.Size([4000])
-        # torch.Size([50002, 1000])
-        # torch.Size([50002])
+        # weight = torch.Size([50002, 500])是所有参数的第一个参数
+        # 所有参数self.parameters()，是个生成器
+        
         if self.rnn_type == 'LSTM':
-            return (weight.new_zeros((self.nlayers, batch_size, self.hidden_size), requires_grad=requires_grad),
-                    weight.new_zeros((self.nlayers, batch_size, self.hidden_size), requires_grad=requires_grad))
+            return (weight.new_zeros((self.nlayers, batch_size, self.hidden_size), 
+                                     requires_grad=requires_grad),
+                    weight.new_zeros((self.nlayers, batch_size, self.hidden_size), 
+                                     requires_grad=requires_grad))
                    # return = (2 * 32 * 1000, 2 * 32 * 1000)
                    # 这里不明白为什么需要weight.new_zeros，我估计是想整个计算图能链接起来
                    # 这里特别注意hidden的输入不是model的参数，不参与更新，就跟输入数据x一样                 
         else:
-            return weight.new_zeros((self.nlayers, batch_size, self.hidden_size), requires_grad=requires_grad)
+            return weight.new_zeros((self.nlayers, batch_size, self.hidden_size), 
+                                    requires_grad=requires_grad)
             # GRU神经网络把h层和c层合并了，所以这里只有一层。
 
 
-# 初始化一个模型
-
-# In[24]:
+# In[34]:
 
 
 hidden_size = 1000 
@@ -243,13 +230,13 @@ if USE_CUDA:
     model = model.cuda()
 
 
-# In[26]:
+# In[35]:
 
 
 model
 
 
-# In[33]:
+# In[36]:
 
 
 list(model.parameters())[0].shape
@@ -258,7 +245,7 @@ list(model.parameters())[0].shape
 # - 我们首先定义评估模型的代码。
 # - 模型的评估和模型的训练逻辑基本相同，唯一的区别是我们只需要forward pass，不需要backward pass
 
-# In[68]:
+# In[38]:
 
 
 def evaluate(model, dev_iter):
@@ -289,20 +276,9 @@ def evaluate(model, dev_iter):
     return loss
 
 
-# In[37]:
+# #### 定义一个function，把一个hidden state和计算图之前的历史分离。
 
-
-import torch
-import numpy as np
-a = torch.ones((5,3))
-print(a.size())
-np.multiply(*a.size()) 
-# *的作用是将list或dict序列拆分为一个个的参数
-
-
-# 我们需要定义下面的一个function，帮助我们把一个hidden state和计算图之前的历史分离。
-
-# In[45]:
+# In[39]:
 
 
 # 将当前隐藏层hidden与之前进行截断
@@ -314,20 +290,17 @@ def repackage_hidden(hidden):
         return tuple(repackage_hidden(v) for v in hidden)
 
 
-# 定义loss function和optimizer
-# 
-
-# In[46]:
+# In[40]:
 
 
 loss_fn = nn.CrossEntropyLoss() 
 learning_rate = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, 0.5)
-# 每调用一次这个函数，lenrning_rate就降一半，0.5就是一半的意思
+# 每调用一次这个函数，lenrning_rate就降一半，0.5是一半
 
 
-# In[13]:
+# In[42]:
 
 
 GRAD_CLIP = 1.
@@ -390,7 +363,7 @@ best_model.load_state_dict(torch.load("lm-best.th"))
 
 # ### 使用最好的模型在valid数据上计算perplexity
 
-# In[15]:
+# In[ ]:
 
 
 val_loss = evaluate(best_model, val_iter)
@@ -400,7 +373,7 @@ print("perplexity: ", np.exp(val_loss))
 
 # ### 使用最好的模型在测试数据上计算perplexity
 
-# In[16]:
+# In[ ]:
 
 
 test_loss = evaluate(best_model, test_iter)
@@ -409,7 +382,7 @@ print("perplexity: ", np.exp(test_loss))
 
 # 使用训练好的模型生成一些句子。
 
-# In[18]:
+# In[ ]:
 
 
 hidden = best_model.init_hidden(1) # batch_size = 1
@@ -434,8 +407,8 @@ for i in range(100):
 print(" ".join(words))
 
 
-# In[42]:
+# In[ ]:
 
 
-torch.randint(50002, (1, 1))
+
 
