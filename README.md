@@ -35,11 +35,13 @@
 
 ---------
 
+- 没有attention的encoder-decoder模型实现机器翻译
+- encoder-decoder+attention实现机器翻译
+
+------
 
 
-#### nlp-tutorial
-- nlp基本模型
--------
 
+#### mdoel
 
-#### model
+- 各种神经网络的输入输出数据格式详解
