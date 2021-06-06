@@ -1,47 +1,29 @@
 ## My_NLP_projects: 
-> NLP项目汇总
+> NLP练手项目汇总，邮箱：lyj157175@163.com
 
-
-
-#### 1-Bert-text-classification
-- 主要技术：Bert / Pytorch / Sklearn / Numpy / python
-- 项目介绍：对18万的训练集，1万的验证集和1万的测试集进行数据处理，实现Dataloader，搭建Bert模型，完成模型的训练和数据的评估
 ------
 
-
-
-#### 2-训练词向量
-- 主要技术：Pytorch / numpy / sklearn
-- 对kim的“Distributed Representations of Words and Phrases and their Compositionality”论文进行复现。实现skip-gram模型，用text8数据集来训练输入输出两个词向量矩阵，保存输入词向量矩阵并在simlex-999、men、wordsim353三个数据集上进行词向量的评估。
+### 1-训练词向量
+- “Distributed Representations of Words and Phrases and their Compositionality”论文的简单复现，实现skip-gram模型。用text8数据集来训练输入输出两个词向量矩阵，保存输入词向量矩阵后在simlex-999、men、wordsim353三个数据集上进行词向量的评估
 -------
 
-
-
-#### 3-训练语言模型
-- 主要技术：Pytorch / Torchtext / RNN / LSTM  
-- 项目介绍：使用text8作为数据集，利用Torchtext创建vocab，BPTTIterator来迭代数据集，选择LSTM模型训练并保存最好的语言模型，用Perplexity对语言模型评估
+### 2-训练语言模型
+- 使用text8作为数据集，选择LSTM模型训练并保存语言模型，在测试集上用Perplexity对语言模型评估
 ---------
 
-
-
-#### 4-情感分类 
-- 主要技术：Pytorch / Torchtext / Spacy / RNN / LSTM
-- 项目介绍：使用IMDb电影评论数据集并用torchtext做数据预处理，分别用Word Averaging/RNN/CNN三种模型来做情感分析，检测一段文本的情感是正面还是负面的，保存三种最好的训练模型结果并对其进行评估。
+### 3-情感分类 
+- 项目介绍：使用IMDb电影评论数据集并用torchtext做数据预处理，分别用Word Averaging/RNN/CNN三种模型来做情感分析，检测一段文本的情感是正面还是负面的，保存三种最好的训练模型结果并对其进行评估
 ---------
 
-
-
-#### 5-机器翻译
-
----------
+### 4-机器翻译
 
 - 没有attention的encoder-decoder模型实现机器翻译
+
 - encoder-decoder+attention实现机器翻译
 
 ------
 
+### 5-Bert文本分类
 
+- THUCNews数据集，包括18万条训练集，1万条验证集和1万的测试集，利用Bert预训练模型，完成各种Bert+模型的训练和文本分类
 
-#### mdoel
-
-- 各种神经网络的输入输出数据格式详解

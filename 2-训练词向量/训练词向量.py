@@ -199,16 +199,20 @@ if __name__ == '__main__':
                         e, i, sim_simlex, sim_men, sim_353, find_nearest("monster")))
                     
         embedding_weights = model.input_embeddings() # 调用最终训练好的embeding词向量
-        torch.save(model.state_dict(), 'model_embedding.th')  # 模型保存
+        torch.save(model.state_dict(), 'model_embedding.th')
 
-    # 模型评估
+
+    
     model = EmbeddingModel(VOCAB_SIZE, EMBEDDING_SIZE)
     model.load_state_dict(torch.load("embedding-{}.th".format(EMBEDDING_SIZE))) # 加载模型
+
+
     # 在 MEN 和 Simplex-999 数据集上做评估
     embedding_weights = model.input_embeddings()
     print("simlex-999", evaluate("simlex-999.txt", embedding_weights))
     print("men", evaluate("men.txt", embedding_weights))
     print("wordsim353", evaluate("wordsim353.csv", embedding_weights))
+
 
     # 寻找nearest neighbors
     def find_nearest(word):
@@ -221,6 +225,7 @@ if __name__ == '__main__':
 
     for word in ["good", "fresh", "monster", "green", "like", "america", "chicago", "work", "computer", "language"]:
         print(word, find_nearest(word))
+
 
     #单词之间的关系
     man_idx = word_to_idx["man"] 
