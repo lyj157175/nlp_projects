@@ -27,7 +27,7 @@
 
 - THUCNews数据集，包括18万条训练集，1万条验证集和1万的测试集，利用Bert预训练模型，完成各种Bert+模型的训练和文本分类
 
-提供预训练模型下载（模型来自https://github.com/ymcui/Chinese-BERT-wwm里的**`RoBERTa-wwm-ext-large, Chinese`**）：
+提供预训练模型下载（模型来自https://github.com/ymcui/Chinese-BERT-wwm里的RoBERTa-wwm-ext-large, Chinese）：
 
 链接：https://pan.baidu.com/s/1LonaTPprR6q9x4zPhj9uKQ     提取码：t93l 
 
