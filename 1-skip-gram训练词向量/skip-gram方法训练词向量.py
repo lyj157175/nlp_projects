@@ -48,7 +48,7 @@ class Dataset(tud.Dataset): # 继承tud.Dataset父类
         pos_words = self.text_encoded[pos_indices]
         # replacement=True有放回的取
         neg_words = torch.multinomial(self.word_freqs, K * pos_words.shape[0], replacement=True)
-        
+    
         return center_word, pos_words, neg_words 
 
 

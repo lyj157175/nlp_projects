@@ -13,8 +13,6 @@ import random
 
 
 
-
-# ### 定义模型
 class LanguageModel(nn.Module):
 
     def __init__(self, vocab_size, embedding_size, hidden_size, nlayers, dropout=0.5):
@@ -40,7 +38,6 @@ class LanguageModel(nn.Module):
         # input: seq_len * batch = [50, 32]，可以在LSTM定义batch_first = True
         # hidden = (nlayers * b * hidden_size)
         # hidden是个元组，输入有两个参数，一个是刚开始的隐藏层h的维度，一个是刚开始的用于记忆的c的维度，
-       
         embed = self.drop(self.embedding(input))  #seq_len * b * embedding_size
         output, hidden = self.rnn(embed, hidden) 
         # output.shape = seq_len * b * hidden_size 
@@ -70,10 +67,6 @@ class LanguageModel(nn.Module):
        
 
 
-
-
-
-
 # - 我们首先定义评估模型的代码。
 # - 模型的评估和模型的训练逻辑基本相同，唯一的区别是我们只需要forward pass，不需要backward pass
 
@@ -87,7 +80,6 @@ def evaluate(model, dev_iter):
         hidden = model.init_hidden(BATCH_SIZE, requires_grad=False)
 # 这里不管是训练模式还是预测模式，h层的输入都是初始化为0，hidden的输入不是model的参数
 # 这里model里的model.parameters()已经是训练过的参数。
-
         for i, batch in enumerate(dev_iter):
             data, target = batch.text, batch.target
             if use_cuda:

@@ -65,5 +65,3 @@ class Model(nn.Module):
         out = self.fc(out)
         return out
 
-
-

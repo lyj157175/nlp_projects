@@ -43,28 +43,3 @@ class Model(nn.Module):
         _, pooled = self.bert(context, attention_mask=mask, output_all_encoded_layers=False) #shape [128,768]
         out = self.fc(pooled) # shape [128,10]
         return out
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

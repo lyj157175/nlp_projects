@@ -80,29 +80,3 @@ class Model(nn.Module):
         x = self.conv(x)
         x = x + px
         return x
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
